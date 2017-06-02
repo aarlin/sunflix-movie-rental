@@ -1,0 +1,8 @@
+Problems
+
+customer should order into MovieQ
+customer/customer rep should not be able to order if type limits it
+documentation
+index page not working
+edit customer information like type
+register not all fields put in... should be error

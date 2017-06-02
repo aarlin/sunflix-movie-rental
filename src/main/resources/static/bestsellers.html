@@ -1,0 +1,312 @@
+
+<!--
+author: W3layouts
+author URL: http://w3layouts.com
+License: Creative Commons Attribution 3.0 Unported
+License URL: http://creativecommons.org/licenses/by/3.0/
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Sunflix - Best Sellers</title>
+	<!-- for-mobile-apps -->
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="keywords" content="One Movies Responsive web template, Bootstrap Web Templates, Flat Web Templates, Android Compatible web template, 
+	Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, SonyEricsson, Motorola web design" />
+	<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false);
+		function hideURLbar(){ window.scrollTo(0,1); } </script>
+		<!-- //for-mobile-apps -->
+		<link href="css/bootstrap.css" rel="stylesheet" type="text/css" media="all" />
+		<link href="css/style.css" rel="stylesheet" type="text/css" media="all" />
+		<link href="css/medile.css" rel='stylesheet' type='text/css' />
+		<link href="css/single.css" rel='stylesheet' type='text/css' />
+		<link rel="stylesheet" href="css/contactstyle.css" type="text/css" media="all" />
+		<link rel="stylesheet" href="css/faqstyle.css" type="text/css" media="all" />
+		<!-- font-awesome icons -->
+		<link rel="stylesheet" href="css/font-awesome.min.css" />
+		<!-- //font-awesome icons -->
+		<!-- news-css -->
+		<link rel="stylesheet" href="news-css/news.css" type="text/css" media="all" />
+		<!-- //news-css -->
+		<!-- list-css -->
+		<link rel="stylesheet" href="list-css/list.css" type="text/css" media="all" />
+		<!-- //list-css -->
+		<!-- js -->
+		<script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
+		<!-- //js -->
+		<link href='//fonts.googleapis.com/css?family=Roboto+Condensed:400,700italic,700,400italic,300italic,300' rel='stylesheet' type='text/css'>
+		<!-- start-smoth-scrolling -->
+		<script type="text/javascript" src="js/move-top.js"></script>
+		<script type="text/javascript" src="js/easing.js"></script>
+		<script type="text/javascript">
+			jQuery(document).ready(function($) {
+				$(".scroll").click(function(event){		
+					event.preventDefault();
+					$('html,body').animate({scrollTop:$(this.hash).offset().top},1000);
+				});
+			});
+		</script>
+		<!-- start-smoth-scrolling -->
+		<link href="css/owl.carousel.css" rel="stylesheet" type="text/css" media="all">
+		<script src="js/owl.carousel.js"></script>
+		<script src="js-cookie-master/src/js.cookie.js"></script>
+		<script>
+			$(document).ready(function() { 
+				var username = Cookies.get('username');
+				if (username == null) {
+					Cookies.remove('username');
+					window.location.href = "signin.html";
+				}
+				$('.accountname').html('<i class="fa fa-tachometer" aria-hidden="true"></i>' + username + '</a>');
+				
+				$('a[href="signin.html"]').click(function(){
+					Cookies.remove('username');
+					Cookies.remove('account');
+					Cookies.remove('id');
+					window.location.href = "signin.html";
+				}); 
+				
+
+				$.ajax({
+					type: 'GET',
+					url: '/query/20',
+					success: function(json) {
+						$.each(json, function() {
+							$("tbody.available").append('<tr>');
+							$.each(this, function(key, value) {
+								$("tbody.available").find("tr").last().append('<td>' + value + '</td>');
+							});
+							$("tbody.available").append('</tr>');
+						});
+					}
+				});
+
+				$("#owl-demo").owlCarousel({
+
+				  autoPlay: 3000, //Set AutoPlay to 3 seconds
+
+				  items : 5,
+				  itemsDesktop : [640,5],
+				  itemsDesktopSmall : [414,4]
+
+				});
+
+			}); 
+		</script> 
+	</head>
+	
+	<body>
+		<!-- header -->
+		<div class="header">
+			<div class="container">
+				<div class="w3layouts_logo">
+					<a href="index.html"><h1>Sun<span>flix</span></h1></a>
+				</div>
+				<div class="w3_search">
+					<form action="search.html" method="get">
+						<input type="text" name="name" placeholder="Search" required="">
+						<input type="submit" value="Go">
+					</form>
+				</div>
+			<div class="w3l_sign_in_register">
+				<ul>
+					<li><a href="dashboard.html" class="accountname"><i class="fa fa-tachometer" aria-hidden="true"></i></a></li>
+					<li><a href="signin.html"><i class="fa fa-sign-out" aria-hidden="true"></i>Sign Out</a></li>
+				</ul>
+			</div>
+				<div class="clearfix"> </div>
+			</div>
+		</div>
+		<!-- //header -->
+		
+	<!-- //bootstrap-pop-up -->
+	<!-- nav -->
+	<div class="movies_nav">
+		<div class="container">
+			<nav class="navbar navbar-default">
+				<div class="navbar-header navbar-left">
+					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+				</div>
+				<!-- Collect the nav links, forms, and other content for toggling -->
+				<div class="collapse navbar-collapse navbar-right" id="bs-example-navbar-collapse-1">
+					<nav>
+						<ul class="nav navbar-nav">
+							<li class="active"><a href="index.html">Home</a></li>
+							<li class="dropdown">
+								<a href="#" class="dropdown-toggle" data-toggle="dropdown">Genre <b class="caret"></b></a>
+								<ul class="dropdown-menu multi-column columns-3">
+									<li>
+										<div class="col-sm-4">
+											<ul class="multi-column-dropdown">
+												<li><a href="./genres.html?type=Comedy">Comedy</a></li>
+												<li><a href="./genres.html?type=Drama">Drama</a></li>
+												<li><a href="./genres.html?type=Action">Action</a></li>
+												<li><a href="./genres.html?type=Foreign">Foreign</a></li>
+											</ul>
+										</div>
+										<div class="col-sm-4">
+											<ul class="multi-column-dropdown">
+												<li><a href="genres.html">Adventure</a></li>
+												<li><a href="genres.html">Documentary</a></li>
+												<li><a href="genres.html">Fantasy</a></li>
+												<li><a href="genres.html">Thriller</a></li>
+											</ul>
+										</div>
+										<div class="col-sm-4">
+											<ul class="multi-column-dropdown">
+												<li><a href="genres.html">Animation</a></li>
+												<li><a href="genres.html">Costume</a></li>
+												<li><a href="genres.html">History</a></li>
+												<li><a href="genres.html">Psychological</a></li>
+											</ul>
+										</div>
+										<div class="clearfix"></div>
+									</li>
+								</ul>
+							</li>
+							<li><a href="actors.html">Actors</a></li>
+							<li><a href="bestsellers.html">Best Sellers</a></li>
+							<li><a href="short-codes.html">Short Codes</a></li>
+							<li><a href="list.html">A - z list</a></li>
+						</ul>
+					</nav>
+				</div>
+			</nav>	
+		</div>
+	</div>
+	<!-- //nav -->
+
+	<!-- /w3l-medile-movies-grids -->
+	<div class="general-agileits-w3l">
+		<div class="w3l-medile-movies-grids">
+
+			<!-- /movie-browse-agile -->
+
+			<div class="movie-browse-agile">
+				<!--/browse-agile-w3ls -->
+				<div class="browse-agile-w3ls general-w3ls">
+					<div class="tittle-head">
+						<h4 class="latest-text"> Best Sellers </h4>
+						<div class="container">
+							<div class="agileits-single-top">
+								<ol class="breadcrumb">
+									<li><a href="index.html">Home</a></li>
+									<li>Best Sellers</li>
+								</ol>
+							</div>
+						</div>
+					</div>
+					<div class="container">
+						<div class="browse-inner">			
+							<div class="bs-docs-example">
+								<table class="table table-hover">
+									<thead>
+										<tr>
+											<th>Movie Id</th>
+											<th>Movie Name</th>
+											<th>Movie Type</th>
+											<th>Movie Rating</th>
+											<th>Number of Order</th>
+										</tr>
+									</thead>
+									<tbody class="available">
+
+									</tbody>
+								</table>
+							</div>
+					</div>
+				</div>
+			</div>
+
+					<!--body wrapper end-->
+				</div>	
+			</div>	 
+		</div>
+		<!-- //w3l-medile-movies-grids -->
+	</div>
+	<!-- //comedy-w3l-agileits -->
+	<!-- footer -->
+<div class="footer">
+		<div class="container">
+			<div class="w3ls_footer_grid">
+				<div class="col-md-6 w3ls_footer_grid_left">
+					<div class="w3ls_footer_grid_left1">
+
+					</div>
+				</div>
+				<div class="col-md-6 w3ls_footer_grid_right">
+					<a href="index.html"><h2>Sun<span>flix</span></h2></a>
+				</div>
+				<div class="clearfix"> </div>
+			</div>
+			<div class="col-md-5 w3ls_footer_grid1_left">
+				<p>&copy; 2016 One Movies. All rights reserved | Design by <a href="http://w3layouts.com/">W3layouts</a></p>
+			</div>
+			<div class="col-md-7 w3ls_footer_grid1_right">
+				<ul>
+					<li>
+						<a href="genres.html">Movies</a>
+					</li>
+					<li>
+						<a href="actors.html">Actors</a>
+					</li>
+					<li>
+						<a href="bestsellers.html">Best Sellers</a>
+					</li>
+					<li>
+						<a href="icons.html">Icons</a>
+					</li>
+					<li>
+						<a href="faq.html">FAQ</a>
+					</li>
+					<li>
+						<a href="contact.html">Contact Us</a>
+					</li>
+				</ul>
+			</div>
+			<div class="clearfix"> </div>
+		</div>
+	</div>
+	<!-- //footer -->
+	<!-- Bootstrap Core JavaScript -->
+	<script src="js/bootstrap.min.js"></script>
+	<script>
+		$(document).ready(function(){
+			$(".dropdown").hover(            
+				function() {
+					$('.dropdown-menu', this).stop( true, true ).slideDown("fast");
+					$(this).toggleClass('open');        
+				},
+				function() {
+					$('.dropdown-menu', this).stop( true, true ).slideUp("fast");
+					$(this).toggleClass('open');       
+				}
+				);
+		});
+	</script>
+	<!-- //Bootstrap Core JavaScript -->
+	<!-- here stars scrolling icon -->
+	<script type="text/javascript">
+		$(document).ready(function() {
+			/*
+				var defaults = {
+				containerID: 'toTop', // fading element id
+				containerHoverID: 'toTopHover', // fading element hover id
+				scrollSpeed: 1200,
+				easingType: 'linear' 
+				};
+				*/
+
+				$().UItoTop({ easingType: 'easeOutQuart' });
+
+			});
+		</script>
+		<!-- //here ends scrolling icon -->
+	</body>
+	</html> 

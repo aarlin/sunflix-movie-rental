@@ -1,0 +1,1606 @@
+
+<!--
+author: W3layouts
+author URL: http://w3layouts.com
+License: Creative Commons Attribution 3.0 Unported
+License URL: http://creativecommons.org/licenses/by/3.0/
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Sunflix - Dashboard</title>
+	<!-- for-mobile-apps -->
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="keywords" content="One Movies Responsive web template, Bootstrap Web Templates, Flat Web Templates, Android Compatible web template, 
+	Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, SonyEricsson, Motorola web design" />
+	<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false);
+		function hideURLbar(){ window.scrollTo(0,1); } </script>
+		<!-- //for-mobile-apps -->
+		<link href="css/bootstrap.css" rel="stylesheet" type="text/css" media="all" />
+		<link href="css/style.css" rel="stylesheet" type="text/css" media="all" />
+		<link href="css/medile.css" rel='stylesheet' type='text/css' />
+		<link href="css/single.css" rel='stylesheet' type='text/css' />
+		<link rel="stylesheet" href="css/contactstyle.css" type="text/css" media="all" />
+		<link rel="stylesheet" href="css/faqstyle.css" type="text/css" media="all" />
+		<!-- font-awesome icons -->
+		<link rel="stylesheet" href="css/font-awesome.min.css" />
+		<!-- //font-awesome icons -->
+		<!-- news-css -->
+		<link rel="stylesheet" href="news-css/news.css" type="text/css" media="all" />
+		<!-- //news-css -->
+		<!-- list-css -->
+		<link rel="stylesheet" href="list-css/list.css" type="text/css" media="all" />
+		<!-- //list-css -->
+		<!-- js -->
+		<script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
+		<!-- //js -->
+		<link href='//fonts.googleapis.com/css?family=Roboto+Condensed:400,700italic,700,400italic,300italic,300' rel='stylesheet' type='text/css'>
+		<!-- start-smoth-scrolling -->
+		<script type="text/javascript" src="js/move-top.js"></script>
+		<script type="text/javascript" src="js/easing.js"></script>
+		<script src="js-cookie-master/src/js.cookie.js"></script>
+		<script type="text/javascript">
+			jQuery(document).ready(function($) {
+				$(".scroll").click(function(event){		
+					event.preventDefault();
+					$('html,body').animate({scrollTop:$(this.hash).offset().top},1000);
+				});
+			});
+		</script>
+		<!-- start-smoth-scrolling -->
+		<link href="css/owl.carousel.css" rel="stylesheet" type="text/css" media="all">
+		<script src="js/owl.carousel.js"></script>
+		<script>
+			$(document).ready(function() { 
+				var username = Cookies.get('username');
+				if (username == null) {
+					Cookies.remove('username');
+					window.location.href = "signin.html";
+				}
+				$('.accountname').html('<i class="fa fa-tachometer" aria-hidden="true"></i>' + username + '</a>');
+				
+				$('a[href="signin.html"]').click(function(){
+					Cookies.remove('username');
+					Cookies.remove('account');
+					Cookies.remove('id');
+					window.location.href = "signin.html";
+				}); 
+				
+				var account = Cookies.get('account');
+				
+				$.ajax({
+					type: 'GET',
+					url: '/accountcheck/' + account,
+					success: function(result) {
+						if(result.status == "Done") {
+							if (result.data == "100") {
+								$('ul.nav-manager').show();
+								$('ul.nav-custrep').show();
+								$('ul.nav-supervisor').show();
+							}
+							else if (result.data == "200") {
+								$('ul.nav-custrep').show();
+							}
+							else if (result.data == "300") {
+								$('ul.nav-customer').show();
+							}
+						}
+					}
+				});
+				
+				$('a[href*="#query"]').click(function(e){
+				 	var settingname = $(e.target).text();
+				 	$('ol.breadcrumb').find("li").last().remove();
+				 	$('ol.breadcrumb').append('<li class="active">' + settingname + '</li>');
+				 	$('div.containerdata').hide();	// HIDE ALL DATA
+				 	var querychosen = "." + $(this).attr("href").substring(1);
+				 	$(querychosen).show();
+				 	ajaxGetQuery(querychosen);
+				 	$('div.postResultDiv').empty();
+				}); 
+
+				function ajaxGetQuery(querychosen) {
+					var querynum = parseInt(querychosen.match(/query(.*)/)[1]);
+					if( $.inArray(querynum, [4,11]) != -1){
+						$.ajax({
+							type: 'GET',
+							url: '/query/' + querynum,
+							success: function(json) {
+								var tbodyDataStore = "tbody" + querychosen;
+								$(tbodyDataStore).empty();
+								$.each(json, function() {
+									$(tbodyDataStore).append('<tr>');
+									$.each(this, function(key, value) {
+										$(tbodyDataStore).find("tr").last().append('<td>' + value + '</td>');
+									});
+									$(tbodyDataStore).append('</tr>');
+								});
+							}
+						});
+					}
+					else if( $.inArray(querynum, [6,7,8]) != -1) {
+						$.ajax({
+							type: 'GET',
+							url: '/query/' + querynum,
+							success: function(json) {
+								var tbodyDataStore = "tbody" + querychosen;
+								$(tbodyDataStore).empty();
+								$.each(json, function() {
+									$(tbodyDataStore).append('<tr style="text-align: center;">');
+									$.each(this, function(key, value) {
+										$(tbodyDataStore).find("tr").last().append('<td>' + value + '</td>');
+									});
+									$(tbodyDataStore).append('</tr>');
+								});
+							}
+						});
+					}
+					else if ($.inArray(querynum, [13]) != -1) {	// ACCOUNT ID INPUT
+						var accountid = Cookies.get('id');
+						$.ajax({
+							type: 'GET',
+							url: '/query/' + querynum + '/' + accountid,
+							success: function(json) {
+								var tbodyDataStore = "tbody" + querychosen;
+								$(tbodyDataStore).empty();
+								$.each(json, function() {
+									$(tbodyDataStore).append('<tr>');
+									$.each(this, function(key, value) {
+										if (key == "DateTime") {
+											var convertedTime = new Date(value);
+											var year = convertedTime.getFullYear();
+											var month = convertedTime.getMonth();
+											var day = convertedTime.getDate();
+											var hours = convertedTime.getHours();
+											var minutes = convertedTime.getMinutes();
+											var seconds = convertedTime.getSeconds();
+											
+											var value = year + "-" + month + "-" + day + " " 
+												+ hours + ":" + minutes + ":" + seconds;
+										}
+										$(tbodyDataStore).find("tr").last().append('<td>' + value + '</td>');
+									});
+									$(tbodyDataStore).append('</tr>');
+								});
+							}
+						});
+					}
+					else if ($.inArray(querynum, [16]) != -1) {	// ACCOUNT ID INPUT
+						var accountid = Cookies.get('id');
+						$.ajax({
+							type: 'GET',
+							url: '/query/' + querynum + '/' + accountid,
+							success: function(json) {
+								var tbodyDataStore = "tbody" + querychosen;
+								$(tbodyDataStore).empty();
+								$.each(json, function() {
+									$(tbodyDataStore).append('<tr>');
+									$.each(this, function(key, value) {
+										if (key == "DateTime") {
+											var convertedTime = new Date(value);
+											var year = convertedTime.getFullYear();
+											var month = convertedTime.getMonth();
+											var day = convertedTime.getDate();
+											var hours = convertedTime.getHours();
+											var minutes = convertedTime.getMinutes();
+											var seconds = convertedTime.getSeconds();
+											
+											var value = year + "-" + month + "-" + day + " " 
+												+ hours + ":" + minutes + ":" + seconds;
+										
+										}
+										$(tbodyDataStore).find("tr").last().append('<td>' + value + '</td>');
+									});
+									$(tbodyDataStore).append('</tr>');
+								});
+							}
+						});
+					}
+					else if ($.inArray(querynum, [14]) != -1) {	// ACCOUNT ID INPUT
+						var accountid = Cookies.get('id');
+						$.ajax({
+							type: 'GET',
+							url: '/query/' + querynum + '/' + accountid,
+							success: function(json) {
+								var tbodyDataStore = "tbody" + querychosen;
+								$(tbodyDataStore).empty();
+								$.each(json, function() {
+									$(tbodyDataStore).append('<tr style="text-align: center">');
+									$.each(this, function(key, value) {
+										$(tbodyDataStore).find("tr").last().append('<td>' + value + '</td>');
+									});
+									$(tbodyDataStore).append('</tr>');
+								});
+							}
+						});
+					}
+					else if ($.inArray(querynum, [15,21]) != -1) {	// SSN INPUT
+						var ssn = Cookies.get('account');
+						$.ajax({
+							type: 'GET',
+							url: '/query/' + querynum + '/' + ssn,
+							success: function(json) {
+								var tbodyDataStore = "tbody" + querychosen;
+								$(tbodyDataStore).empty();
+								$.each(json, function() {
+									$(tbodyDataStore).append('<tr>');
+									$.each(this, function(key, value) {
+										$(tbodyDataStore).find("tr").last().append('<td>' + value + '</td>');
+									});
+									$(tbodyDataStore).append('</tr>');
+								});
+							}
+						});
+					}
+				}
+				
+
+				$("#owl-demo").owlCarousel({
+
+				  autoPlay: 3000, //Set AutoPlay to 3 seconds
+
+				  items : 5,
+				  itemsDesktop : [640,5],
+				  itemsDesktopSmall : [414,4]
+
+				});
+
+			}); 
+		</script> 
+		<style>
+			.navbar-fixed-left {
+				width: 140px;
+				position: fixed;
+				border-radius: 0;
+				height: 100%;
+			}
+
+			.navbar-fixed-left .navbar-nav > li {
+				float: none;  /* Cancel default li float: left */
+				width: 139px;
+			}
+
+			.navbar-fixed-left + .container {
+				padding-left: 160px;
+			}
+
+			/* On using dropdown menu (To right shift popuped) */
+			.navbar-fixed-left .navbar-nav > li > .dropdown-menu {
+				margin-top: -50px;
+				margin-left: 140px;
+			}
+			.sidestyle {
+				padding-left: 0px;
+				padding-right: 0px;
+				background-color: #EFEFEF;
+				width: 12.5%;
+				color: #212121;
+			}
+			
+			.whiteback {
+				background-color: white;
+			}
+
+			.paddingcrumb {
+				padding-top: 1cm;
+			}
+		</style>
+	</head>
+	
+	<!-- MOVE TO api.js -->
+	<script type="text/javascript" src="js/api.js"></script>
+
+	<body>
+		<!-- header -->
+		<div class="header">
+			<div class="container">
+				<div class="w3layouts_logo">
+					<a href="index.html"><h1>Sun<span>flix</span></h1></a>
+				</div>
+				<div class="w3_search">
+					<form action="search.html" method="get">
+						<input type="text" name="name" placeholder="Search" required="">
+						<input type="submit" value="Go">
+					</form>
+				</div>
+			<div class="w3l_sign_in_register">
+				<ul>
+					<li><a href="dashboard.html" class="accountname"><i class="fa fa-tachometer" aria-hidden="true"></i></a></li>
+					<li><a href="signin.html"><i class="fa fa-sign-out" aria-hidden="true"></i>Sign Out</a></li>
+				</ul>
+			</div>
+				<div class="clearfix"> </div>
+			</div>
+		</div>
+		<!-- //header -->
+
+		<!-- //bootstrap-pop-up -->
+		<!-- nav -->
+	<div class="movies_nav">
+		<div class="container">
+			<nav class="navbar navbar-default">
+				<div class="navbar-header navbar-left">
+					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+				</div>
+				<!-- Collect the nav links, forms, and other content for toggling -->
+				<div class="collapse navbar-collapse navbar-right" id="bs-example-navbar-collapse-1">
+					<nav>
+						<ul class="nav navbar-nav">
+							<li class="active"><a href="index.html">Home</a></li>
+							<li class="dropdown">
+								<a href="#" class="dropdown-toggle" data-toggle="dropdown">Genres <b class="caret"></b></a>
+								<ul class="dropdown-menu multi-column columns-3">
+									<li>
+										<div class="col-sm-4">
+											<ul class="multi-column-dropdown">
+												<li><a href="./genres.html?type=Comedy">Comedy</a></li>
+												<li><a href="./genres.html?type=Drama">Drama</a></li>
+												<li><a href="./genres.html?type=Action">Action</a></li>
+												<li><a href="./genres.html?type=Foreign">Foreign</a></li>
+											</ul>
+										</div>
+										<div class="col-sm-4">
+											<ul class="multi-column-dropdown">
+												<li><a href="genres.html">Adventure</a></li>
+												<li><a href="genres.html">Documentary</a></li>
+												<li><a href="genres.html">Fantasy</a></li>
+												<li><a href="genres.html">Thriller</a></li>
+											</ul>
+										</div>
+										<div class="col-sm-4">
+											<ul class="multi-column-dropdown">
+												<li><a href="genres.html">Animation</a></li>
+												<li><a href="genres.html">Costume</a></li>
+												<li><a href="genres.html">History</a></li>
+												<li><a href="genres.html">Psychological</a></li>
+											</ul>
+										</div>
+										<div class="clearfix"></div>
+									</li>
+								</ul>
+							</li>
+							<li><a href="actors.html">Actors</a></li>
+							<li><a href="bestsellers.html">Best Sellers</a></li>
+							<li><a href="short-codes.html">Short Codes</a></li>
+							<li><a href="list.html">A - z list</a></li>
+						</ul>
+					</nav>
+				</div>
+			</nav>	
+		</div>
+	</div>
+	<!-- //nav -->
+<!-- Sidebar -->
+
+<div class="container-fluid">
+	<div class="row whiteback">
+		<div class="col-sm-2 col-md-1 sidebar sidestyle">
+			<ul class="nav nav-sidebar">
+				<li class="active"><a href="#"><strong>Dashboard</strong> <span class="sr-only">(current)</span></a></li>
+			</ul>
+			<!-- MANAGER LEVEL TRANSACTIONS -->
+			<ul class="nav nav-sidebar nav-manager" style="display: none;">
+				<li><a href="#query1a">Add Movie</a></li>
+				<li><a href="#query1b">Edit Movie</a></li>
+				<li><a href="#query1c">Delete Movie</a></li>
+				<li><a href="#query2a">Add Employee</a></li>
+				<li><a href="#query2b">Edit Employee</a></li>
+				<li><a href="#query2c">Delete Employee</a></li>
+				<li><a href="#query3">Sales Report</a></li>
+				<li><a href="#query4">Comprehensive Listing of Movies</a></li>
+				<li><a href="#query5a">Rentals by Movie Name</a></li>
+				<li><a href="#query5b">Rentals by Movie Type</a></li>
+				<li><a href="#query5c">Rentals by Customer Name</a></li>
+				<li><a href="#query6">Highest Transactions by Customer Rep</a></li>
+				<li><a href="#query7">Most Active Customers</a></li>
+				<li><a href="#query8">Most Actively Rented Movies</a></li>
+			</ul>
+			<!-- END OF MANAGER LEVEL TRANSACTIONS -->
+
+			<!-- CUSTOMER REP LEVEL TRANSACTIONS -->
+			<ul class="nav nav-sidebar nav-custrep" style="display: none;"> 
+				<li><a href="#query9">Record an Order</a></li>
+				<li><a href="#query10a">Add Customer</a></li>
+				<li><a href="#query10b">Edit Customer</a></li>
+				<li><a href="#query10c">Delete Customer</a></li>
+				<li><a href="#query11">Produce Customer Mailing List</a></li>
+				<li><a href="#query12">Customer Movie Suggestion</a></li>
+			</ul>
+			<!-- END OF CUSTOMER LEVEL TRANSACTIONS -->
+
+			<!-- START OF CUSTOMER LEVEL TRANSACTIONS -->
+			<ul class="nav nav-sidebar nav-customer" style="display: none;">
+				<li><a href="#query13">Currently Held Movies</a></li>
+				<li><a href="#query14">Movie Queue</a></li>
+				<li><a href="#query15">View Information Settings</a></li>
+				<li><a href="#query16">Current and Past Orders</a></li>
+				<li><a href="#query21">Own Movie Suggestion</a></li>
+				<li><a href="#query22">Past Rental Rating</a></li>
+			</ul>
+			<!-- END OF START OF CUSTOMER LEVEL TRANSACTIONS -->
+			
+			<ul class="nav nav-sidebar nav-supervisor" style="display: none;">
+				<li><a href="#query23">Database Query Console</a></li>
+			</ul>
+			
+		
+
+		</div>
+		<div class="col-sm-9 col-md-4">
+			<div class="tittle-head">
+				<div></div>
+				<div class="container">
+					<div class="agileits-single-top paddingcrumb">
+						<ol class="breadcrumb">
+							<li><a href="index.html">Settings</a></li>
+							<li></li>
+						</ol>
+					</div>
+				</div>
+			</div>
+			
+			
+
+			<!-- START OF ALL DISPLAY DATA -->
+
+			<!-- ADD MOVIE -->
+			<div class="container containerdata query1a" style="display: none;" >
+				<div class="row">
+					<div class="col-md-4 col-md-offset-4">
+						<div class="postResultDiv"></div>
+						<form class="form-horizontal form-addmovie" role="form" action="">
+							<fieldset>
+
+								<!-- Form Name -->
+								<legend>Add Movie</legend>
+								
+
+								<!-- Text input-->
+								<div class="form-group">
+									<label class="col-sm-3 control-label" for="textinput">Movie Id</label>
+									<div class="col-sm-9">
+										<input type="text" placeholder="Movie Id" id="q1a_id" class="form-control">
+									</div>
+								</div>
+
+								<!-- Text input-->
+								<div class="form-group">
+									<label class="col-sm-3 control-label" for="textinput">Name</label>
+									<div class="col-sm-9">
+										<input type="text" placeholder="Name" id="q1a_name" class="form-control">
+									</div>
+								</div>
+
+								<!-- Text input-->
+								<div class="form-group">
+									<label class="col-sm-3 control-label" for="textinput">Type</label>
+									<div class="col-sm-9">
+										<select name="Type" id="q1a_type" class="form-control">
+											<option value="Comedy">Comedy</option>
+											<option value="Drama">Drama</option>
+											<option value="Action">Action</option>
+											<option value="Foreign">Foreign</option>
+										</select>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label class="col-sm-3 control-label" for="textinput">Rating</label>
+									<div class="col-sm-9">
+										<input type="text" placeholder="Rating" id="q1a_rating" class="form-control">
+									</div>
+								</div>
+
+								<!-- Text input-->
+								<div class="form-group">
+									<label class="col-sm-3 control-label" for="textinput">Distribution Fee</label>
+									<div class="col-sm-9">
+										<input type="text" placeholder="Distribution Fee" id="q1a_distrfee" class="form-control">
+									</div>
+								</div>
+
+								<!-- Text input-->
+								<div class="form-group">
+									<label class="col-sm-3 control-label" for="textinput">Number of Copies</label>
+									<div class="col-sm-9">
+										<input type="text" placeholder="Number of Copies" id="q1a_numcopies" class="form-control">
+									</div>
+								</div>
+
+								<div class="form-group">
+									<div class="col-sm-offset-2 col-sm-10">
+										<div class="pull-right">
+											<button type="reset" class="btn btn-default">Reset</button>
+											<button type="submit" class="btn btn-primary">Save Insert</button>
+										</div>
+									</div>
+								</div>
+
+							</fieldset>
+						</form>
+					</div><!-- /.col-lg-12 -->
+				</div><!-- /.row -->
+			</div>
+
+			<!-- EDIT MOVIE -->
+			<div class="container containerdata query1b" style="display: none;" >
+				<div class="row">
+					<div class="col-md-4 col-md-offset-4">
+						<div class="postResultDiv"></div>
+						<form class="form-horizontal form-editmovie" role="form" action="">
+							<fieldset>
+
+								<!-- Form Name -->
+								<legend>Edit Movie</legend>
+								
+
+								<!-- Text input-->
+								<div class="form-group">
+									<label class="col-sm-3 control-label" for="textinput">Movie Id</label>
+									<div class="col-sm-9">
+										<input type="text" placeholder="Movie Id" id="q1b_id" class="form-control">
+									</div>
+								</div>
+
+										<!-- Text input-->
+								<div class="form-group">
+									<label class="col-sm-3 control-label" for="textinput">Column Attribute</label>
+									<div class="col-sm-9">
+										<select name="Column Attribute" id="q1b_attr" class="form-control">
+											<option value="Id">Id</option>
+											<option value="Name">Name</option>
+											<option value="Type">Type</option>
+											<option value="Rating">Rating</option>
+											<option value="DistrFee">Distribution Fee</option>
+											<option value="NumCopies">Number of Copies</option>
+										</select>
+									</div>
+								</div>
+
+								<!-- Text input-->
+								<div class="form-group">
+									<label class="col-sm-3 control-label" for="textinput">Column Value</label>
+									<div class="col-sm-9">
+										<input type="text" placeholder="Column Value" id="q1b_attrval" class="form-control">
+									</div>
+								</div>
+
+
+								<div class="form-group">
+									<div class="col-sm-offset-2 col-sm-10">
+										<div class="pull-right">
+											<button type="reset" class="btn btn-default">Reset</button>
+											<button type="submit" class="btn btn-primary">Save Edit</button>
+										</div>
+									</div>
+								</div>
+
+							</fieldset>
+						</form>
+					</div><!-- /.col-lg-12 -->
+				</div><!-- /.row -->
+			</div>
+
+			<!-- DELETE MOVIE -->
+			<div class="container containerdata query1c" style="display: none;" >
+				<div class="row">
+					<div class="col-md-4 col-md-offset-4">
+						<div class="postResultDiv"></div>
+						<form class="form-horizontal form-deletemovie" role="form" action="">
+							<fieldset>
+
+								<!-- Form Name -->
+								<legend>Delete Movie</legend>
+								
+
+								<!-- Text input-->
+								<div class="form-group">
+									<label class="col-sm-3 control-label" for="textinput">Movie Id</label>
+									<div class="col-sm-9">
+										<input type="text" placeholder="Movie Id" id="q1c_id" class="form-control">
+									</div>
+								</div>
+
+								<div class="form-group">
+									<div class="col-sm-offset-2 col-sm-10">
+										<div class="pull-right">
+											<button type="reset" class="btn btn-default">Reset</button>
+											<button type="submit" class="btn btn-primary">Save Delete</button>
+										</div>
+									</div>
+								</div>
+
+							</fieldset>
+						</form>
+					</div><!-- /.col-lg-12 -->
+				</div><!-- /.row -->
+			</div>
+
+			<!-- ADD EMPLOYEE -->
+			<div class="container containerdata query2a" style="display: none;" >
+				<div class="row">
+					<div class="col-md-4 col-md-offset-4">
+						<div class="postResultDiv"></div>
+						<form class="form-horizontal form-addemployee" role="form" action="">
+							<fieldset>
+
+								<!-- Form Name -->
+								<legend>Add Employee</legend>
+								
+								<!-- Text input-->
+								<div class="form-group">
+									<label class="col-sm-3 control-label" for="textinput">Employee ID</label>
+									<div class="col-sm-9">
+										<input type="text" placeholder="Employee ID" id="q2a_id" class="form-control">
+									</div>
+								</div>
+
+								<!-- Text input-->
+								<div class="form-group">
+									<label class="col-sm-3 control-label" for="textinput">SSN</label>
+									<div class="col-sm-9">
+										<input type="text" placeholder="XXX-XX-XXXX" id="q2a_ssn" class="form-control">
+									</div>
+								</div>
+
+								<!-- Text input-->
+								<div class="form-group">
+									<label class="col-sm-3 control-label" for="textinput">Start Date</label>
+									<div class="col-sm-9">
+										<input type="date" placeholder="yyyy-mm-dd" id="q2a_startdate" class="form-control">
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label class="col-sm-3 control-label" for="textinput">Hourly Rate</label>
+									<div class="col-sm-9">
+										<input type="text" placeholder="Hourly Rate" id="q2a_hourlyrate" class="form-control">
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label class="col-sm-3 control-label" for="textinput">Manager Status</label>
+									<div class="col-sm-9">
+										<input type="text" placeholder="1 OR 0" id="q2a_managerstatus" class="form-control">
+									</div>
+								</div>
+
+								<div class="form-group">
+									<div class="col-sm-offset-2 col-sm-10">
+										<div class="pull-right">
+											<button type="reset" class="btn btn-default">Reset</button>
+											<button type="submit" class="btn btn-primary">Save Insert</button>
+										</div>
+									</div>
+								</div>
+
+							</fieldset>
+						</form>
+					</div><!-- /.col-lg-12 -->
+				</div><!-- /.row -->
+			</div>
+
+			<!-- EDIT EMPLOYEE -->
+			<div class="container containerdata query2b" style="display: none;" >
+				<div class="row">
+					<div class="col-md-4 col-md-offset-4">
+						<div class="postResultDiv"></div>
+						<form class="form-horizontal form-editemployee" role="form" action="">
+							<fieldset>
+
+								<!-- Form Name -->
+								<legend>Edit Employee</legend>
+								
+
+								<!-- Text input-->
+								<div class="form-group">
+									<label class="col-sm-3 control-label" for="textinput">Employee ID</label>
+									<div class="col-sm-9">
+										<input type="text" placeholder="Employee ID" id="q2b_id" class="form-control">
+									</div>
+								</div>
+
+								<!-- Text input-->
+								<div class="form-group">
+									<label class="col-sm-3 control-label" for="textinput">Column Attribute</label>
+									<div class="col-sm-9">
+										<select name="Column Attribute" id="q2b_attr" class="form-control">
+											<option value="ID">ID</option>
+											<option value="StartDate">Start Date</option>
+											<option value="HourlyRate">Hourly Rate</option>
+										</select>
+									</div>
+								</div>
+
+								<!-- Text input-->
+								<div class="form-group">
+									<label class="col-sm-3 control-label" for="textinput">Column Value</label>
+									<div class="col-sm-9">
+										<input type="text" placeholder="Column Value" id="q2b_attrval" class="form-control">
+									</div>
+								</div>
+
+
+								<div class="form-group">
+									<div class="col-sm-offset-2 col-sm-10">
+										<div class="pull-right">
+											<button type="reset" class="btn btn-default">Reset</button>
+											<button type="submit" class="btn btn-primary">Save Edit</button>
+										</div>
+									</div>
+								</div>
+
+							</fieldset>
+						</form>
+					</div><!-- /.col-lg-12 -->
+				</div><!-- /.row -->
+			</div>
+
+			<!-- DELETE EMPLOYEE -->
+			<div class="container containerdata query2c" style="display: none;" >
+				<div class="row">
+					<div class="col-md-4 col-md-offset-4">
+						<div class="postResultDiv"></div>
+						<form class="form-horizontal form-deleteemployee" role="form" action="">
+							<fieldset>
+
+								<!-- Form Name -->
+								<legend>Delete Employee</legend>
+								
+
+								<!-- Text input-->
+								<div class="form-group">
+									<label class="col-sm-3 control-label" for="textinput">SSN</label>
+									<div class="col-sm-9">
+										<input type="text" placeholder="XXX-XX-XXXX" id="q2c_ssn" class="form-control">
+									</div>
+								</div>
+
+								<div class="form-group">
+									<div class="col-sm-offset-2 col-sm-10">
+										<div class="pull-right">
+											<button type="reset" class="btn btn-default">Reset</button>
+											<button type="submit" class="btn btn-primary">Save Delete</button>
+										</div>
+									</div>
+								</div>
+
+							</fieldset>
+						</form>
+					</div><!-- /.col-lg-12 -->
+				</div><!-- /.row -->
+			</div>
+
+			<!-- SALES REPORT -->
+			<div class="container containerdata query3" style="display: none;" >
+				<div class="browse-inner">
+					<form class="input-group stylish-input-group form-salesreport" action="">
+						<input type="date" id="salesreport" class="form-control">
+						<span class="input-group-addon">
+							<button type="submit">
+								<span class="glyphicon glyphicon-search"></span>
+							</button>  
+						</span>
+					</form>
+					<table class="table table-hover">
+						<thead>
+							<tr>
+								<th style="text-align: center;">Monthly Subscription Income</th>
+							</tr>
+						</thead>
+						<tbody class="query3">
+
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+			<!-- COMPREHENSIVE LISTING OF MOVIES -->
+			<div class="container containerdata query4" style="display: none;" >
+				<div class="browse-inner">
+					<table class="table table-hover">
+						<thead>
+							<tr>
+								<th>Movie Id</th>
+								<th>Movie Name</th>
+								<th>Movie Type</th>
+								<th>Rating</th>
+							</tr>
+						</thead>
+						<tbody class="query4">
+
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+			<!-- MOVIE RENTAL BY NAME -->
+			<div class="container containerdata query5a" style="display: none;" >
+				<div class="browse-inner">
+					<form class="input-group stylish-input-group form-searchmoviename" action="">
+						<input type="text" class="form-control" id="searchmoviename" placeholder="Search Movies by Name" >
+						<span class="input-group-addon">
+							<button type="submit">
+								<span class="glyphicon glyphicon-search"></span>
+							</button>  
+						</span>
+					</form>
+					<table class="table table-hover">
+						<thead>
+							<tr>
+								<th>Account Id</th>
+								<th>Customer Rep. Id</th>
+								<th>Order Id</th>
+								<th>Movie Name</th>
+							</tr>
+						</thead>
+						<tbody class="query5a">
+
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+
+			<!-- MOVIE RENTAL BY MOVIE TYPE -->
+			<div class="container containerdata query5b" style="display: none;" >
+				<div class="browse-inner">
+					<form class="input-group stylish-input-group form-searchmovietype" action="">
+						<select name="Column Attribute" id="searchmovietype" class="form-control">
+							<option value="">Movie Type</option>
+							<option value="Comedy">Comedy</option>
+							<option value="Drama">Drama</option>
+							<option value="Action">Action</option>
+							<option value="Foreign">Foreign</option>
+						</select>
+						<span class="input-group-addon">
+							<button type="submit">
+								<span class="glyphicon glyphicon-search"></span>
+							</button>  
+						</span>
+					</form>
+					<table class="table table-hover">
+						<thead>
+							<tr>
+								<th>Account Id</th>
+								<th>Customer Rep. Id</th>
+								<th>Order Id</th>
+								<th>Movie Name</th>
+							</tr>
+						</thead>
+						<tbody class="query5b">
+
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+			<!-- MOVIE RENTAL BY CUSTOMER NAME / SSN -->
+			<div class="container containerdata query5c" style="display: none;" >
+				<div class="browse-inner">
+					<form class="input-group stylish-input-group form-searchmoviecust" action="">
+						<input type="text" id="searchmoviecust" class="form-control" placeholder="Search Rentals by Customer SSN" >
+						<span class="input-group-addon">
+							<button type="submit">
+								<span class="glyphicon glyphicon-search"></span>
+							</button>  
+						</span>
+					</form>
+					<table class="table table-hover">
+						<thead>
+							<tr>
+								<th>Account Id</th>
+								<th>Customer Rep. Id</th>
+								<th>Order Id</th>
+								<th>Movie Name</th>
+							</tr>
+						</thead>
+						<tbody class="query5c">
+
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+			<!-- HIGHEST TRANSACTIONS BY CUSTOMER REP. -->
+			<div class="container containerdata query6" style="display: none;">
+				<div class="browse-inner">
+					<table class="table table-hover">
+						<thead>
+							<tr>
+								<th style="text-align: center;">Customer Rep. Id</th>
+								<th style="text-align: center;">Number of Transactions</th>
+							</tr>
+						</thead>
+						<tbody class="query6">
+
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+			<!-- MOST ACTIVE CUSTOMERS -->
+			<div class="container containerdata query7" style="display: none;">
+				<div class="browse-inner">
+					<table class="table table-hover">
+						<thead>
+							<tr>
+								<th style="text-align: center;">Account Id</th>
+								<th style="text-align: center;">Number of Rentals</th>
+							</tr>
+						</thead>
+						<tbody class="query7">
+
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+			<!-- MOST ACTIVELY RENTED MOVIES -->
+			<div class="container containerdata query8" style="display: none;">
+				<div class="browse-inner">
+					<table class="table table-hover">
+						<thead>
+							<tr>
+								<th style="text-align: center;">Movie Id</th>
+								<th style="text-align: center;">Movie Name</th>
+								<th style="text-align: center;">Movie Rating</th>
+								<th style="text-align: center;">Number of Order</th>
+							</tr>
+						</thead>
+						<tbody class="query8">
+
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+			<!-- END OF MANAGER LEVEL TRANSACTIONS -->
+
+
+			<!-- START OF CUST. REP LEVEL TRANSACTIONS -->
+
+			<!-- RECORD AN ORDER -->
+			<div class="container containerdata query9" style="display: none;" >
+				<div class="row">
+					<div class="col-md-4 col-md-offset-4">
+						<div class="postResultDiv"></div>
+						<form class="form-horizontal form-recordorder" role="form" action="">
+							<fieldset>
+
+								<!-- Form Name -->
+								<legend>Record an Order</legend>
+
+								<div class="form-group">
+									<label class="col-sm-3 control-label" for="textinput">Account Id</label>
+									<div class="col-sm-9">
+										<input type="text" placeholder="Account Id" id="q9_accountid" class="form-control">
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-sm-3 control-label" for="textinput">Customer Rep. Id</label>
+									<div class="col-sm-9">
+										<input type="text" placeholder="Customer Rep. Id" id="q9_custrepid" class="form-control">
+									</div>
+								</div>
+								<!-- Text input-->
+								<div class="form-group">
+									<label class="col-sm-3 control-label" for="textinput">Order Id</label>
+									<div class="col-sm-9">
+										<input type="text" placeholder="Id" id="q9_orderid" class="form-control">
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label class="col-sm-3 control-label" for="textinput">Movie Id</label>
+									<div class="col-sm-9">
+										<input type="text" placeholder="Movie Id" id="q9_movieid" class="form-control">
+									</div>
+								</div>
+
+								<!-- Text input-->
+								<div class="form-group">
+									<label class="col-sm-3 control-label" for="textinput">Date Time</label>
+									<div class="col-sm-9">
+										<input type="datetime-local" placeholder="yyyy-mm-dd hh:mm:ss" id="q9_datetime" class="form-control">
+									</div>
+								</div>
+
+								<!-- Text input-->
+								<div class="form-group">
+									<label class="col-sm-3 control-label" for="textinput">Return Date</label>
+									<div class="col-sm-9">
+										<input type="date" placeholder="yyyy-mm-dd" id="q9_returndate" class="form-control">
+									</div>
+								</div>
+
+								<div class="form-group">
+									<div class="col-sm-offset-2 col-sm-10">
+										<div class="pull-right">
+											<button type="reset" class="btn btn-default">Reset</button>
+											<button type="submit" class="btn btn-primary">Save Insert</button>
+										</div>
+									</div>
+								</div>
+
+							</fieldset>
+						</form>
+					</div><!-- /.col-lg-12 -->
+				</div><!-- /.row -->
+			</div>
+
+			<!-- ADD CUSTOMER -->
+			<div class="container containerdata query10a" style="display: none;" >
+				<div class="row">
+					<div class="col-md-4 col-md-offset-4">
+						<div class="postResultDiv"></div>
+						<form class="form-horizontal form-addcustomer" role="form" action="">
+							<fieldset>
+
+								<!-- Form Name -->
+								<legend>Add Customer</legend>
+								
+								<div class="form-group">
+									<label class="col-sm-3 control-label" for="textinput">Username</label>
+									<div class="col-sm-9">
+										<input type="text" placeholder="Username" id="q10a_username" class="form-control">
+									</div>
+								</div>
+
+								<!-- Text input-->
+								<div class="form-group">
+									<label class="col-sm-3 control-label" for="textinput">Email</label>
+									<div class="col-sm-9">
+										<input type="email" placeholder="Email" id="q10a_email" class="form-control">
+									</div>
+								</div>
+
+								<!-- Text input-->
+								<div class="form-group">
+									<label class="col-sm-3 control-label" for="textinput">Password</label>
+									<div class="col-sm-9">
+										<input type="text" placeholder="Password" id="q10a_password" class="form-control">
+									</div>
+								</div>
+
+								<!-- Text input-->
+								<div class="form-group">
+									<label class="col-sm-3 control-label" for="textinput">First Name</label>
+									<div class="col-sm-9">
+										<input type="text" placeholder="First Name" id="q10a_firstname" class="form-control">
+									</div>
+								</div>
+
+								<!-- Text input-->
+								<div class="form-group">
+									<label class="col-sm-3 control-label" for="textinput">Last Name</label>
+									<div class="col-sm-9">
+										<input type="text" placeholder="Last Name" id="q10a_lastname" class="form-control">
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label class="col-sm-3 control-label" for="textinput">SSN</label>
+									<div class="col-sm-9">
+										<input type="text" placeholder="XXX-XX-XXXX" id="q10a_socialsecuritynumber" class="form-control">
+									</div>
+								</div>
+
+
+								<div class="form-group">
+									<label class="col-sm-3 control-label" for="textinput">Credit Card #</label>
+									<div class="col-sm-9">
+										<input type="text" placeholder="XXXX-XXXX-XXXX-XXXX" id="q10a_creditcardnumber" class="form-control">
+									</div>
+								</div>
+
+								<!-- Text input-->
+								<div class="form-group">
+									<label class="col-sm-3 control-label" for="textinput">Address</label>
+									<div class="col-sm-9">
+										<input type="text" placeholder="Address" id="q10a_address" class="form-control">
+									</div>
+								</div>
+
+								<!-- Text input-->
+								<div class="form-group">
+									<label class="col-sm-3 control-label" for="textinput">Zip Code</label>
+									<div class="col-sm-9">
+										<input type="text" placeholder="Zip Code" id="q10a_zipcode" class="form-control">
+									</div>
+								</div>
+
+								<!-- Text input-->
+								<div class="form-group">
+									<label class="col-sm-3 control-label" for="textinput">Telephone</label>
+									<div class="col-sm-9">
+										<input type="text" placeholder="XXX-XXX-XXXX" id="q10a_telephone" class="form-control">
+									</div>
+								</div>
+
+								<!-- Text input-->
+								<div class="form-group">
+									<label class="col-sm-3 control-label" for="textinput">City</label>
+									<div class="col-sm-9">
+										<input type="text" placeholder="City" id="q10a_city" class="form-control">
+									</div>
+								</div>
+
+								<!-- Text input-->
+								<div class="form-group">
+									<label class="col-sm-3 control-label" for="textinput">State</label>
+									<div class="col-sm-9">
+										<input type="text" placeholder="State" id="q10a_state" class="form-control">
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label class="col-sm-3 control-label" for="textinput">Rating</label>
+									<div class="col-sm-9">
+										<input type="text" placeholder="Rating" id="q10a_rating" class="form-control">
+									</div>
+								</div>
+
+								<!-- Text input-->
+								<div class="form-group">
+									<label class="col-sm-3 control-label" for="textinput">Account Type</label>
+									<div class="col-sm-9">
+										<select name="Account Type" id="q10a_accounttype" class="form-control">
+											<option value="limited">limited</option>
+											<option value="unlimited-1">unlimited-1</option>
+											<option value="unlimited-2">unlimited-2</option>
+											<option value="unlimited-3">unlimited-3</option>
+										</select>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<div class="col-sm-offset-2 col-sm-10">
+										<div class="pull-right">
+											<button type="reset" class="btn btn-default">Reset</button>
+											<button type="submit" class="btn btn-primary">Save Insert</button>
+										</div>
+									</div>
+								</div>
+
+							</fieldset>
+						</form>
+					</div><!-- /.col-lg-12 -->
+				</div><!-- /.row -->
+			</div>
+
+	
+			<!-- EDIT CUSTOMER -->
+			<div class="container containerdata query10b" style="display: none;" >
+				<div class="row">
+					<div class="col-md-4 col-md-offset-4">
+						<div class="postResultDiv"></div>
+						<form class="form-horizontal form-editcustomer" role="form" action="">
+							<fieldset>
+
+								<!-- Form Name -->
+								<legend>Edit Customer</legend>
+								
+
+								<!-- Text input-->
+								<div class="form-group">
+									<label class="col-sm-3 control-label" for="textinput">ID</label>
+									<div class="col-sm-9">
+										<input type="text" placeholder="XXX-XX-XXXX" id="q10b_id" class="form-control">
+									</div>
+								</div>
+
+								<!-- Text input-->
+								<div class="form-group">
+									<label class="col-sm-3 control-label" for="textinput">Column Attribute</label>
+									<div class="col-sm-9">
+										<select name="Column Attribute" id="q10b_attr" class="form-control">
+											<!--  Customer Table -->
+											<option value="Email">Email</option>
+											<option value="Rating">Rating</option>
+											<option value="CreditCardNumber">Credit Card Number</option>
+											<!-- Account Table -->
+											<option value="DateOpened">DateOpened</option>
+											<option value="Type">Account Type</option>
+											<!--  Person Table -->
+											<option value="LastName">Last Name</option>
+											<option value="FirstName">First Name</option>
+											<option value="Address">Address</option>
+											<option value="Telephone">Telephone</option>
+
+										</select>
+									</div>
+								</div>
+
+								<!-- Text input-->
+								<div class="form-group">
+									<label class="col-sm-3 control-label" for="textinput">Column Value</label>
+									<div class="col-sm-9">
+										<input type="text" placeholder="Column Value" id="q10b_attrval" class="form-control">
+									</div>
+								</div>
+
+
+								<div class="form-group">
+									<div class="col-sm-offset-2 col-sm-10">
+										<div class="pull-right">
+											<button type="reset" class="btn btn-default">Reset</button>
+											<button type="submit" class="btn btn-primary">Save Edit</button>
+										</div>
+									</div>
+								</div>
+
+							</fieldset>
+						</form>
+					</div><!-- /.col-lg-12 -->
+				</div><!-- /.row -->
+			</div>
+
+			<!-- DELETE EMPLOYEE -->
+			<div class="container containerdata query10c" style="display: none;" >
+				<div class="row">
+					<div class="col-md-4 col-md-offset-4">
+						<div class="postResultDiv"></div>
+						<form class="form-horizontal form-deletecustomer" role="form" action="">
+							<fieldset>
+
+								<!-- Form Name -->
+								<legend>Delete Customer</legend>
+								
+
+								<!-- Text input-->
+								<div class="form-group">
+									<label class="col-sm-3 control-label" for="textinput">Id</label>
+									<div class="col-sm-9">
+										<input type="text" placeholder="XXX-XX-XXXX" id="q10c_id" class="form-control">
+									</div>
+								</div>
+
+								<div class="form-group">
+									<div class="col-sm-offset-2 col-sm-10">
+										<div class="pull-right">
+											<button type="reset" class="btn btn-default">Reset</button>
+											<button type="submit" class="btn btn-primary">Save Delete</button>
+										</div>
+									</div>
+								</div>
+
+							</fieldset>
+						</form>
+					</div><!-- /.col-lg-12 -->
+				</div><!-- /.row -->
+			</div>
+			
+			<!-- MAILING LIST -->
+			<div class="container containerdata query11" style="display: none;">
+				<div class="browse-inner">
+					<table class="table table-hover">
+						<thead>
+							<tr>
+								<th>SSN</th>
+								<th>First Name</th>
+								<th>Last Name</th>
+								<th>Address</th>
+								<th>Email Address</th>
+							</tr>
+						</thead>
+						<tbody class="query11">
+
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+			<!-- MOVIE SUGGESTION FOR CUSTOMER -->
+			<div class="container containerdata query12" style="display: none;" >
+				<div class="browse-inner">
+					<form class="input-group stylish-input-group form-suggestmovie" action="">
+						<input type="text" class="form-control" id="suggestmovie" placeholder="Enter Customer Id (SSN) for Movie Suggestions" >
+						<span class="input-group-addon">
+							<button type="submit">
+								<span class="glyphicon glyphicon-search"></span>
+							</button>  
+						</span>
+					</form>
+					<table class="table table-hover">
+						<thead>
+							<tr>
+								<th>Movie Id</th>
+								<th>Movie Name</th>
+								<th>Movie Type</th>
+							</tr>
+						</thead>
+						<tbody class="query12">
+
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+
+			<!-- START OF CUSTOMER LEVEL TRANSACTIONS -->
+
+			<!-- CURRENTLY HELD MOVIES -->
+			<div class="container containerdata query13" style="display: none;" >
+				<div class="browse-inner">
+					<table class="table table-hover">
+						<thead>
+							<tr>
+								<th>Account Id</th>
+								<th>Movie Id</th>
+								<th>Date Time</th>
+								<th>Return Date</th>
+							</tr>
+						</thead>
+						<tbody class="query13">
+
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+			<!-- MOVIE QUEUE -->
+			<div class="container containerdata query14" style="display: none;">
+				<div class="browse-inner">
+					<div class="row">
+					<div class="col-md-4 col-md-offset-4">
+						<div class="postResultDiv"></div>
+						<form class="form-horizontal form-moviequeue" role="form" action="">
+							<fieldset>
+
+								<!-- Form Name -->
+								<legend>Put Movie into Queue</legend>
+
+								<div class="form-group">
+									<label class="col-sm-3 control-label" for="textinput">Movie Id</label>
+									<div class="col-sm-9">
+										<input type="text" placeholder="Movie Id" id="q14b_movieid" class="form-control">
+									</div>
+								</div>
+
+								<div class="form-group">
+									<div class="col-sm-offset-2 col-sm-10">
+										<div class="pull-right">
+											<button type="reset" class="btn btn-default">Reset</button>
+											<button type="submit" class="btn btn-primary">Save Insert</button>
+										</div>
+									</div>
+								</div>
+
+							</fieldset>
+						</form>
+					</div><!-- /.col-lg-12 -->
+				</div><!-- /.row -->
+					<table class="table table-hover">
+						<thead>
+							<tr>
+								<th style="text-align: center;">Account Id</th>
+								<th style="text-align: center;">Movie Id</th>
+							</tr>
+						</thead>
+						<tbody class="query14">
+
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+			<!-- ACCOUNT SETTINGS -->
+			<div class="container containerdata query15" style="display: none;">
+				<div class="browse-inner">
+					<table class="table table-hover">
+						<thead>
+							<tr>
+								<th>Account Id</th>
+								<th>Date Opened</th>
+								<th>Account Type</th>
+								<th>Email</th>
+								<th>Credit Card Number</th>
+							</tr>
+						</thead>
+						<tbody class="query15">
+
+						</tbody>
+					</table>
+				</div>
+			</div>
+			
+			<!-- CURRENT AND PAST ORDERS -->
+			<div class="container containerdata query16" style="display: none;">
+				<div class="browse-inner">
+					<table class="table table-hover">
+						<thead>
+							<tr>
+								<th>Account Id</th>
+								<th>Movie Id</th>
+								<th>Date Ordered</th>
+								<th>Return Date</th>
+							</tr>
+						</thead>
+						<tbody class="query16">
+
+						</tbody>
+					</table>
+				</div>
+			</div>
+			
+			<!-- OWN MOVIE SUGGESTiON -->
+			<div class="container containerdata query21" style="display: none;" >
+				<div class="browse-inner">
+					<table class="table table-hover">
+						<thead>
+							<tr>
+								<th>Movie Id</th>
+								<th>Movie Name</th>
+								<th>Movie Type</th>
+							</tr>
+						</thead>
+						<tbody class="query21">
+
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+			<!-- RATE MOVIE RENTED -->
+			<div class="container containerdata query22" style="display: none;" >
+				<div class="row">
+					<div class="col-md-4 col-md-offset-4">
+						<div class="postResultDiv"></div>
+						<form class="form-horizontal form-ratemovie" role="form" action="">
+							<fieldset>
+
+								<!-- Form Name -->
+								<legend>Rate Rented Movies</legend>
+								
+
+								<!-- Text input-->
+								<div class="form-group">
+									<label class="col-sm-3 control-label" for="textinput">Rating</label>
+									<div class="col-sm-9">
+										<input type="text" placeholder="Rating" id="q22_rating" class="form-control">
+									</div>
+								</div>
+
+								<!-- Text input-->
+								<div class="form-group">
+									<label class="col-sm-3 control-label" for="textinput">Movie Name</label>
+									<div class="col-sm-9">
+										<input type="text" placeholder="Movie Name" id="q22_moviename" class="form-control">
+									</div>
+								</div>
+
+
+								<div class="form-group">
+									<div class="col-sm-offset-2 col-sm-10">
+										<div class="pull-right">
+											<button type="reset" class="btn btn-default">Reset</button>
+											<button type="submit" class="btn btn-primary">Save Edit</button>
+										</div>
+									</div>
+								</div>
+
+							</fieldset>
+						</form>
+					</div><!-- /.col-lg-12 -->
+				</div><!-- /.row -->
+			</div>
+			
+			<!-- MOVIE SUGGESTION FOR CUSTOMER -->
+			<div class="container containerdata query23" style="display: none;" >
+				<div class="browse-inner">
+					<div class="postResultDiv"></div>
+					<form class="input-group stylish-input-group form-anyquery" action="">
+						<textarea class="form-control custom-control" id="q23_query" placeholder="Enter a MySQL based query..." rows="3" style="resize:none"></textarea>
+						<span class="input-group-addon">
+							<button type="submit">
+								<span class="glyphicon glyphicon-search"></span>
+							</button>  
+						</span>
+					</form>
+					<table class="table table-hover">
+						<thead class="query23">
+						</thead>
+						<tbody class="query23">
+
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+    		<!-- END OF ALL DISPLAY DATA -->
+      </div>
+    </div>
+
+				</div>	
+			</div>	 
+		</div>
+		<!-- //w3l-medile-movies-grids -->
+	</div>
+	<!-- //comedy-w3l-agileits -->
+	<!-- footer -->
+	<div class="footer">
+		<div class="container">
+			<div class="w3ls_footer_grid">
+				<div class="col-md-6 w3ls_footer_grid_left">
+					<div class="w3ls_footer_grid_left1">
+
+					</div>
+				</div>
+				<div class="col-md-6 w3ls_footer_grid_right">
+					<a href="index.html"><h2>Sun<span>flix</span></h2></a>
+				</div>
+				<div class="clearfix"> </div>
+			</div>
+			<div class="col-md-5 w3ls_footer_grid1_left">
+				<p>&copy; 2016 One Movies. All rights reserved | Design by <a href="http://w3layouts.com/">W3layouts</a></p>
+			</div>
+			<div class="col-md-7 w3ls_footer_grid1_right">
+				<ul>
+					<li>
+						<a href="genres.html">Movies</a>
+					</li>
+					<li>
+						<a href="actors.html">Actors</a>
+					</li>
+					<li>
+						<a href="bestsellers.html">Best Sellers</a>
+					</li>
+					<li>
+						<a href="icons.html">Icons</a>
+					</li>
+					<li>
+						<a href="faq.html">FAQ</a>
+					</li>
+					<li>
+						<a href="contact.html">Contact Us</a>
+					</li>
+				</ul>
+			</div>
+			<div class="clearfix"> </div>
+		</div>
+	</div>
+	<!-- //footer -->
+	<!-- Bootstrap Core JavaScript -->
+	<script src="js/bootstrap.min.js"></script>
+	<script>
+		$(document).ready(function(){
+			$(".dropdown").hover(            
+				function() {
+					$('.dropdown-menu', this).stop( true, true ).slideDown("fast");
+					$(this).toggleClass('open');        
+				},
+				function() {
+					$('.dropdown-menu', this).stop( true, true ).slideUp("fast");
+					$(this).toggleClass('open');       
+				}
+				);
+		});
+	</script>
+	<!-- //Bootstrap Core JavaScript -->
+	<!-- here stars scrolling icon -->
+	<script type="text/javascript">
+		$(document).ready(function() {
+			/*
+				var defaults = {
+				containerID: 'toTop', // fading element id
+				containerHoverID: 'toTopHover', // fading element hover id
+				scrollSpeed: 1200,
+				easingType: 'linear' 
+				};
+				*/
+
+				$().UItoTop({ easingType: 'easeOutQuart' });
+
+			});
+		</script>
+		<!-- //here ends scrolling icon -->
+	</body>
+	</html>
